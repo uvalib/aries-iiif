@@ -63,5 +63,7 @@ func iiifHandlePid(w http.ResponseWriter, r *http.Request, params httprouter.Par
 
 	json := fmt.Sprintf(`{ "identifier": [ "%s" ], "service_url": [ { "url": "%s", "protocol": "iiif" } ], "derivative_file": [ "%s" ] }`, pid, serviceUrl, derivativeFile)
 
+	w.Header().Set("Content-Type", "application/json")
+
 	fmt.Fprintf(w, json)
 }
