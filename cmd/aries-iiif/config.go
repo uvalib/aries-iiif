@@ -28,6 +28,7 @@ type configData struct {
 	iiifUrlTemplate    configStringItem
 	mandalaDirPrefix   configStringItem
 	mandalaUrlTemplate configStringItem
+	ensureExists       configBoolItem
 	useHttps           configBoolItem
 	sslCrt             configStringItem
 	sslKey             configStringItem
@@ -41,6 +42,7 @@ func init() {
 	config.iiifUrlTemplate = configStringItem{value: "", configItem: configItem{flag: "f", env: "ARIES_IIIF_IIIF_URL_TEMPLATE", desc: "iiif url template"}}
 	config.mandalaDirPrefix = configStringItem{value: "", configItem: configItem{flag: "m", env: "ARIES_IIIF_MANDALA_DIR_PREFIX", desc: "mandala directory prefix"}}
 	config.mandalaUrlTemplate = configStringItem{value: "", configItem: configItem{flag: "a", env: "ARIES_IIIF_MANDALA_URL_TEMPLATE", desc: "mandala url template"}}
+	config.ensureExists = configBoolItem{value: false, configItem: configItem{flag: "e", env: "ARIES_IIIF_ENSURE_EXISTS", desc: "ensure derivative file exists"}}
 	config.useHttps = configBoolItem{value: false, configItem: configItem{flag: "s", env: "ARIES_IIIF_USE_HTTPS", desc: "use https"}}
 	config.sslCrt = configStringItem{value: "", configItem: configItem{flag: "c", env: "ARIES_IIIF_SSL_CRT", desc: "ssl crt"}}
 	config.sslKey = configStringItem{value: "", configItem: configItem{flag: "k", env: "ARIES_IIIF_SSL_KEY", desc: "ssl key"}}
@@ -78,6 +80,7 @@ func getConfigValues() {
 	flagStringVar(&config.iiifUrlTemplate)
 	flagStringVar(&config.mandalaDirPrefix)
 	flagStringVar(&config.mandalaUrlTemplate)
+	flagBoolVar(&config.ensureExists)
 	flagBoolVar(&config.useHttps)
 	flagStringVar(&config.sslCrt)
 	flagStringVar(&config.sslKey)
@@ -107,6 +110,7 @@ func getConfigValues() {
 	logger.Printf("[CONFIG] iiifUrlTemplate     = [%s]", config.iiifUrlTemplate.value)
 	logger.Printf("[CONFIG] mandalaDirPrefix    = [%s]", config.mandalaDirPrefix.value)
 	logger.Printf("[CONFIG] mandalaUrlTemplate  = [%s]", config.mandalaUrlTemplate.value)
+	logger.Printf("[CONFIG] ensureExists        = [%s]", strconv.FormatBool(config.ensureExists.value))
 	logger.Printf("[CONFIG] useHttps            = [%s]", strconv.FormatBool(config.useHttps.value))
 	logger.Printf("[CONFIG] sslCrt              = [%s]", config.sslCrt.value)
 	logger.Printf("[CONFIG] sslKey              = [%s]", config.sslKey.value)
