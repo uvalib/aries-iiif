@@ -10,8 +10,8 @@ import (
 	"github.com/rs/cors"
 )
 
-const progname = "aires-iiif"
-const version = "1.0"
+const progname = "aries-iiif"
+const version = "1.0.0"
 
 var logger *log.Logger
 
