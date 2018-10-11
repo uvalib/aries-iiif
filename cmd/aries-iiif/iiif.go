@@ -126,9 +126,10 @@ func iiifHandlePid(w http.ResponseWriter, r *http.Request, params httprouter.Par
 
 	// build Aries API response object
 	var iiifResponse AriesAPI
-	iiifResponse.Identifiers = append(iiifResponse.Identifiers, pid)
-	iiifResponse.DerivativeFiles = append(iiifResponse.DerivativeFiles, derivativeFile)
-	iiifResponse.ServiceUrls = append(iiifResponse.ServiceUrls, ServiceUrl{Url: serviceUrl, Protocol: "iiif"})
+
+	iiifResponse.addIdentifier(pid)
+	iiifResponse.addDerivativeFile(derivativeFile)
+	iiifResponse.addServiceUrl(ServiceUrl{Url: serviceUrl, Protocol: "iiif"})
 
 	w.Header().Set("Content-Type", "application/json")
 
