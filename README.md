@@ -4,7 +4,7 @@ This is a web service to implement the Aries API for IIIF.
 It supports the following endpoints:
 
 * / : returns version information
-* /iiif/[PID] : returns a JSON object with some information about the image referenced by PID
+* /resources/iiif/pid/[PID] : returns a JSON object with some information about the image referenced by PID
 
 ### System Requirements
 
