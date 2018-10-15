@@ -30,8 +30,7 @@ func main() {
 	// Set routes and start server
 	mux := httprouter.New()
 	mux.GET("/", rootHandler)
-	mux.GET("/resources/iiif/pid/:pid", iiifHandlePid)
-	mux.GET("/resources/iiif/all", nil)
+	mux.GET("/api/aries/:pid", iiifHandlePid)
 
 	logger.Printf("Start service on port %s", config.listenPort.value)
 
