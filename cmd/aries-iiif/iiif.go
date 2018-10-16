@@ -95,7 +95,7 @@ func processPid(pid string) (string, string, error) {
 }
 
 /* Handles a request for information about a single PID */
-func iiifHandlePid(w http.ResponseWriter, r *http.Request, params httprouter.Params) {
+func iiifPidHandler(w http.ResponseWriter, r *http.Request, params httprouter.Params) {
 	logger.Printf("%s %s", r.Method, r.RequestURI)
 
 	pid := params.ByName("pid")

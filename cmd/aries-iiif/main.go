@@ -30,7 +30,8 @@ func main() {
 	// Set routes and start server
 	mux := httprouter.New()
 	mux.GET("/", rootHandler)
-	mux.GET("/api/aries/:pid", iiifHandlePid)
+	mux.GET("/api/aries", apiHandler)
+	mux.GET("/api/aries/:pid", iiifPidHandler)
 
 	logger.Printf("Start service on port %s", config.listenPort.value)
 
@@ -41,10 +42,14 @@ func main() {
 	}
 }
 
-/**
- * Handle a request for /
- */
+// Handle a request for /
 func rootHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	logger.Printf("%s %s", r.Method, r.RequestURI)
 	fmt.Fprintf(w, "%s version %s", progname, version)
+}
+
+// Handle a request for /api/aries
+func apiHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+	logger.Printf("%s %s", r.Method, r.RequestURI)
+	fmt.Fprintf(w, "IIIF Aries API")
 }
