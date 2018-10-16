@@ -39,7 +39,7 @@ func buildSubPath(id string) (subPath string) {
 }
 
 // if this is an IIIF PID, returns the service URL and derivative file
-func processIiifPid(pid string) (string, string, error) {
+func processIiifPid(pid string) (string, string, string, error) {
 	// valid pid forms:
 	// tsm:1234567
 	// uva-lib:1234567
@@ -47,7 +47,7 @@ func processIiifPid(pid string) (string, string, error) {
 
 	if !re.MatchString(pid) {
 		logger.Printf("%s is NOT IIIF", pid)
-		return "", "", errors.New("PID is not IIIF")
+		return "", "", "", errors.New("PID is not IIIF")
 	}
 
 	pos := strings.LastIndex(pid, ":")
@@ -55,13 +55,14 @@ func processIiifPid(pid string) (string, string, error) {
 	pidId := pid[pos+1:]
 
 	derivativeFile := config.iiifDirPrefix.value + "/" + pidType + buildSubPath(pidId) + "/" + pidId + ".jp2"
-	serviceUrl := config.iiifUrlTemplate.value
+	serviceUrl := config.iiifServiceUrlTemplate.value
+	accessUrl := config.iiifAccessUrlTemplate.value
 
-	return derivativeFile, serviceUrl, nil
+	return derivativeFile, serviceUrl, accessUrl, nil
 }
 
 // if this is a Mandala PID, returns the service URL and derivative file
-func processMandalaPid(pid string) (string, string, error) {
+func processMandalaPid(pid string) (string, string, string, error) {
 	// valid forms:
 	// shanti-image-1234567
 	// shanti-image-dev-1234567
@@ -69,29 +70,30 @@ func processMandalaPid(pid string) (string, string, error) {
 
 	if !re.MatchString(pid) {
 		logger.Printf("%s is NOT Mandala", pid)
-		return "", "", errors.New("PID is not Mandala")
+		return "", "", "", errors.New("PID is not Mandala")
 	}
 
 	pos := strings.LastIndex(pid, "-")
 	pidId := pid[pos+1:]
 
 	derivativeFile := config.mandalaDirPrefix.value + buildSubPath(pidId) + "/" + pid + ".jp2"
-	serviceUrl := config.mandalaUrlTemplate.value
+	serviceUrl := config.mandalaServiceUrlTemplate.value
+	accessUrl := config.mandalaAccessUrlTemplate.value
 
-	return derivativeFile, serviceUrl, nil
+	return derivativeFile, serviceUrl, accessUrl, nil
 }
 
 // if this is a supported PID, returns the service URL and derivative file
-func processPid(pid string) (string, string, error) {
-	if x, y, err := processIiifPid(pid); err == nil {
-		return x, y, err
+func processPid(pid string) (string, string, string, error) {
+	if x, y, z, err := processIiifPid(pid); err == nil {
+		return x, y, z, err
 	}
 
-	if x, y, err := processMandalaPid(pid); err == nil {
-		return x, y, err
+	if x, y, z, err := processMandalaPid(pid); err == nil {
+		return x, y, z, err
 	}
 
-	return "", "", errors.New("PID is neither IIIF nor Mandala")
+	return "", "", "", errors.New("PID is neither IIIF nor Mandala")
 }
 
 /* Handles a request for information about a single PID */
@@ -100,11 +102,9 @@ func iiifPidHandler(w http.ResponseWriter, r *http.Request, params httprouter.Pa
 
 	pid := params.ByName("pid")
 
-	var derivativeFile, serviceUrl string
-	var err error
-
 	// get file and url info, if this is a known PID type
-	if derivativeFile, serviceUrl, err = processPid(pid); err != nil {
+	derivativeFile, serviceUrl, accessUrl, err := processPid(pid)
+	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		logger.Printf("processing failed for PID: [%s]", pid)
 		fmt.Fprintf(w, "Invalid PID: %s", pid)
@@ -121,8 +121,9 @@ func iiifPidHandler(w http.ResponseWriter, r *http.Request, params httprouter.Pa
 		}
 	}
 
-	// reformat url with actual PID
+	// reformat urls with actual PID
 	serviceUrl = strings.Replace(serviceUrl, "{PID}", pid, 1)
+	accessUrl = strings.Replace(accessUrl, "{PID}", pid, 1)
 
 	// build Aries API response object
 	var iiifResponse AriesAPI
@@ -130,6 +131,7 @@ func iiifPidHandler(w http.ResponseWriter, r *http.Request, params httprouter.Pa
 	iiifResponse.addIdentifier(pid)
 	iiifResponse.addDerivativeFile(derivativeFile)
 	iiifResponse.addServiceUrl(ServiceUrl{Url: serviceUrl, Protocol: "iiif"})
+	iiifResponse.addAccessUrl(accessUrl)
 
 	w.Header().Set("Content-Type", "application/json")
 
