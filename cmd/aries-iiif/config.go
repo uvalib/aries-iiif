@@ -25,9 +25,11 @@ type configBoolItem struct {
 type configData struct {
 	listenPort                configStringItem
 	iiifDirPrefix             configStringItem
+	iiifDirCosmeticPrefix     configStringItem
 	iiifServiceUrlTemplate    configStringItem
 	iiifAccessUrlTemplate     configStringItem
 	mandalaDirPrefix          configStringItem
+	mandalaDirCosmeticPrefix  configStringItem
 	mandalaServiceUrlTemplate configStringItem
 	mandalaAccessUrlTemplate  configStringItem
 	ensureExists              configBoolItem
@@ -41,9 +43,11 @@ var config configData
 func init() {
 	config.listenPort = configStringItem{value: "", configItem: configItem{flag: "l", env: "ARIES_IIIF_LISTEN_PORT", desc: "listen port"}}
 	config.iiifDirPrefix = configStringItem{value: "", configItem: configItem{flag: "p", env: "ARIES_IIIF_IIIF_DIR_PREFIX", desc: "iiif directory prefix"}}
+	config.iiifDirCosmeticPrefix = configStringItem{value: "", configItem: configItem{flag: "o", env: "ARIES_IIIF_IIIF_DIR_COSMETIC_PREFIX", desc: "iiif directory cosmetic prefix"}}
 	config.iiifServiceUrlTemplate = configStringItem{value: "", configItem: configItem{flag: "r", env: "ARIES_IIIF_IIIF_SERVICE_URL_TEMPLATE", desc: "iiif service url template"}}
 	config.iiifAccessUrlTemplate = configStringItem{value: "", configItem: configItem{flag: "a", env: "ARIES_IIIF_IIIF_ACCESS_URL_TEMPLATE", desc: "iiif access url template"}}
 	config.mandalaDirPrefix = configStringItem{value: "", configItem: configItem{flag: "P", env: "ARIES_IIIF_MANDALA_DIR_PREFIX", desc: "mandala directory prefix"}}
+	config.mandalaDirCosmeticPrefix = configStringItem{value: "", configItem: configItem{flag: "O", env: "ARIES_IIIF_MANDALA_DIR_COSMETIC_PREFIX", desc: "mandala directory cosmetic prefix"}}
 	config.mandalaServiceUrlTemplate = configStringItem{value: "", configItem: configItem{flag: "R", env: "ARIES_IIIF_MANDALA_SERVICE_URL_TEMPLATE", desc: "mandala service url template"}}
 	config.mandalaAccessUrlTemplate = configStringItem{value: "", configItem: configItem{flag: "A", env: "ARIES_IIIF_MANDALA_ACCESS_URL_TEMPLATE", desc: "mandala access url template"}}
 	config.ensureExists = configBoolItem{value: false, configItem: configItem{flag: "e", env: "ARIES_IIIF_ENSURE_EXISTS", desc: "ensure derivative file exists"}}
@@ -81,9 +85,11 @@ func getConfigValues() {
 	// get values from the command line first, falling back to environment variables
 	flagStringVar(&config.listenPort)
 	flagStringVar(&config.iiifDirPrefix)
+	flagStringVar(&config.iiifDirCosmeticPrefix)
 	flagStringVar(&config.iiifServiceUrlTemplate)
 	flagStringVar(&config.iiifAccessUrlTemplate)
 	flagStringVar(&config.mandalaDirPrefix)
+	flagStringVar(&config.mandalaDirCosmeticPrefix)
 	flagStringVar(&config.mandalaServiceUrlTemplate)
 	flagStringVar(&config.mandalaAccessUrlTemplate)
 	flagBoolVar(&config.ensureExists)
@@ -98,9 +104,11 @@ func getConfigValues() {
 	configOK := true
 	configOK = ensureConfigStringSet(&config.listenPort) && configOK
 	configOK = ensureConfigStringSet(&config.iiifDirPrefix) && configOK
+//	configOK = ensureConfigStringSet(&config.iiifDirCosmeticPrefix) && configOK
 	configOK = ensureConfigStringSet(&config.iiifServiceUrlTemplate) && configOK
 	configOK = ensureConfigStringSet(&config.iiifAccessUrlTemplate) && configOK
 	configOK = ensureConfigStringSet(&config.mandalaDirPrefix) && configOK
+//	configOK = ensureConfigStringSet(&config.mandalaDirCosmeticPrefix) && configOK
 	configOK = ensureConfigStringSet(&config.mandalaServiceUrlTemplate) && configOK
 	configOK = ensureConfigStringSet(&config.mandalaAccessUrlTemplate) && configOK
 	if config.useHttps.value == true {
@@ -115,9 +123,11 @@ func getConfigValues() {
 
 	logger.Printf("[CONFIG] listenPort                = [%s]", config.listenPort.value)
 	logger.Printf("[CONFIG] iiifDirPrefix             = [%s]", config.iiifDirPrefix.value)
+	logger.Printf("[CONFIG] iiifDirCosmeticPrefix     = [%s]", config.iiifDirCosmeticPrefix.value)
 	logger.Printf("[CONFIG] iiifServiceUrlTemplate    = [%s]", config.iiifServiceUrlTemplate.value)
 	logger.Printf("[CONFIG] iiifAccessUrlTemplate     = [%s]", config.iiifAccessUrlTemplate.value)
 	logger.Printf("[CONFIG] mandalaDirPrefix          = [%s]", config.mandalaDirPrefix.value)
+	logger.Printf("[CONFIG] mandalaDirCosmeticPrefix  = [%s]", config.mandalaDirCosmeticPrefix.value)
 	logger.Printf("[CONFIG] mandalaServiceUrlTemplate = [%s]", config.mandalaServiceUrlTemplate.value)
 	logger.Printf("[CONFIG] mandalaAccessUrlTemplate  = [%s]", config.mandalaAccessUrlTemplate.value)
 	logger.Printf("[CONFIG] ensureExists              = [%s]", strconv.FormatBool(config.ensureExists.value))

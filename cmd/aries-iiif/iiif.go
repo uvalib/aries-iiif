@@ -54,7 +54,12 @@ func processIiifPid(pid string) (string, string, string, error) {
 	pidType := pid[:pos]
 	pidId := pid[pos+1:]
 
-	derivativeFile := config.iiifDirPrefix.value + "/" + pidType + buildSubPath(pidId) + "/" + pidId + ".jp2"
+	dirPrefix := config.iiifDirCosmeticPrefix.value
+	if dirPrefix == "" {
+		dirPrefix = config.iiifDirPrefix.value
+	}
+
+	derivativeFile := dirPrefix + "/" + pidType + buildSubPath(pidId) + "/" + pidId + ".jp2"
 	serviceUrl := config.iiifServiceUrlTemplate.value
 	accessUrl := config.iiifAccessUrlTemplate.value
 
@@ -76,7 +81,12 @@ func processMandalaPid(pid string) (string, string, string, error) {
 	pos := strings.LastIndex(pid, "-")
 	pidId := pid[pos+1:]
 
-	derivativeFile := config.mandalaDirPrefix.value + buildSubPath(pidId) + "/" + pid + ".jp2"
+	dirPrefix := config.mandalaDirCosmeticPrefix.value
+	if dirPrefix == "" {
+		dirPrefix = config.mandalaDirPrefix.value
+	}
+
+	derivativeFile := dirPrefix + buildSubPath(pidId) + "/" + pid + ".jp2"
 	serviceUrl := config.mandalaServiceUrlTemplate.value
 	accessUrl := config.mandalaAccessUrlTemplate.value
 
